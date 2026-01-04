@@ -24,7 +24,8 @@ export const componentsCssContent = /* css */ `
 
 .nav-btn.active {
     background: white;
-    color: #667eea;
+    color: #1a2980;
+    font-weight: bold;
 }
 
 /* 环境变量样式 */
@@ -512,6 +513,10 @@ export const componentsCssContent = /* css */ `
 
 .value-type-badge.multi {
     background: #ff6b6b;
+}
+
+.value-type-badge.map {
+    background: #9b59b6;
 }
 
 /* 进度条 */
