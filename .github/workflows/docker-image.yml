@@ -1,13 +1,11 @@
 name: Build and Push Docker Image to Docker Hub
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-    if: github.repository == 'huangxd-/danmu_api'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
 
 jobs:
   build:
