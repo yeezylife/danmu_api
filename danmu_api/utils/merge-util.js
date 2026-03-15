@@ -31,7 +31,7 @@ const ENABLE_VERBOSE_MERGE_LOG = false;
  */
 const MergeWeights = Object.freeze({
     // 标题与结构
-    TITLE_STRUCTURE_CONFLICT: -0.15, // 标题结构冲突（如父子集关系）
+    TITLE_STRUCTURE_CONFLICT: -0.30, // 标题结构冲突（如父子集关系）
     LANG_MATCH_CN: 0.15,             // 双端均为中文时的奖励
     LANG_MISMATCH: -0.20,            // 语言不一致时的惩罚
     
@@ -63,7 +63,7 @@ const MergeWeights = Object.freeze({
  * @readonly
  */
 const Thresholds = Object.freeze({
-    SIMILARITY_MIN: 0.6,             // 最低标题相似度
+    SIMILARITY_MIN: 0.65,             // 最低标题相似度
     SIMILARITY_STRONG: 0.98,         // 强匹配（Probe确认后）
     TIER_DEFAULT: 0.001,             // 默认分数梯度容差
     TIER_CN: 0.40,                   // 中文优先梯度容差
@@ -2485,11 +2485,11 @@ export function alignSourceTimelines(results, sourceNames, realIds, dandanShifts
  * @returns {number}
  */
 function getDanmuTime(danmu) {
-  if (danmu.t !== undefined && danmu.t !== null) return Number(danmu.t);
   if (danmu.p && typeof danmu.p === 'string') {
     const pTime = parseFloat(danmu.p.split(',')[0]);
     if (!isNaN(pTime)) return pTime;
   }
+  if (danmu.t !== undefined && danmu.t !== null) return Number(danmu.t);
   if (typeof danmu.progress === 'number') {
     return danmu.progress / 1000;
   }
