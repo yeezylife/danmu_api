@@ -13,7 +13,7 @@ const previewCategoryMeta = {
 
 const previewGroupDefinitions = {
     api: [
-        { name: '访问认证', keys: ['TOKEN', 'ADMIN_TOKEN'] },
+        { name: '访问认证', keys: ['TOKEN', 'ADMIN_TOKEN', 'FAVORITE_REQUIRE_ADMIN'] },
         { name: '请求控制', keys: ['RATE_LIMIT_MAX_REQUESTS'] }
     ],
     source: [
@@ -23,7 +23,7 @@ const previewGroupDefinitions = {
     ],
     match: [
         { name: '匹配策略', keys: ['PLATFORM_ORDER', 'STRICT_TITLE_MATCH', 'ENABLE_ANIME_EPISODE_FILTER'] },
-        { name: '标题处理', keys: ['ANIME_TITLE_FILTER', 'EPISODE_TITLE_FILTER', 'TITLE_TO_CHINESE', 'ANIME_TITLE_SIMPLIFIED', 'TITLE_MAPPING_TABLE', 'TITLE_NOISE_FILTER'] },
+        { name: '标题处理', keys: ['ANIME_TITLE_FILTER', 'EPISODE_TITLE_FILTER', 'TITLE_TO_CHINESE', 'ANIME_TITLE_SIMPLIFIED', 'TITLE_MAPPING_TABLE', 'AUTO_MATCH_MAPPING_TABLE', 'TITLE_NOISE_FILTER'] },
         { name: 'AI 匹配', keys: ['AI_BASE_URL', 'AI_MODEL', 'AI_API_KEY', 'AI_MATCH_PROMPT'] },
         { name: '动画元数据', keys: ['USE_BANGUMI_DATA'] }
     ],
@@ -294,6 +294,9 @@ function getPreviewGroupName(category, key) {
 
 function formatPreviewValue(value) {
     if (value === null || value === undefined) return '';
+    if (Array.isArray(value)) {
+        return value.join(',');
+    }
     if (typeof value === 'object') {
         try {
             return JSON.stringify(value, null, 2);
