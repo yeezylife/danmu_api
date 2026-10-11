@@ -161,13 +161,24 @@ LogVar 弹幕 API 服务器
    ```bash
    # 启动
    node ./danmu_api/server.js
-   # 测试
-   node --test ./danmu_api/worker.test.js
+   # 测试（danmu_api/tests 下的全部用例）
+   npm test
+   # 只跑单个测试文件
+   node --test danmu_api/tests/utils/merge-util.test.js
    # 构建forward弹幕插件
    node build-forward-widget.js
-   # 测试forward弹幕插件
-   node forward/forward-widget.test.js
+   # 测试forward弹幕插件（真实联网，需手动执行）
+   node forward/forward-widget.spec.js
    ```
+
+   > 测试用例全部位于 `danmu_api/tests/`，目录与 `danmu_api/` 源码目录一一对应（`utils/`、`sources/`、`apis/`、`configs/`、`models/`、`ui/`），
+   > 跨模块的请求级用例放在 `tests/` 顶层，共享夹具在 `tests/helpers/`。
+   > `npm test` 使用 `node --test --test-concurrency=1`：本地弹幕与 Bangumi Data 用例会读写仓库根目录的 `.cache/`，
+   > 因此测试文件必须串行执行，请勿去掉 `--test-concurrency=1`。
+   > 该命令依赖 Node 默认的测试文件发现规则（Node 18 及以上均可用），不需要也不应改成 `--test <目录>` 形式。
+   > `danmu_api/tests/manual/live-source-checks.js` 是依赖真实数据源的手工巡检用例，不会被自动发现、也不参与 `npm test`；
+   > 手动执行：`node --test danmu_api/tests/manual/live-source-checks.js`（详见文件头说明）；
+   > 其中写入真实平台环境变量 / 触发真实部署 / 写真实 Redis 的用例默认跳过，需要时加 `LIVE_SOURCE_WRITE_CHECKS=true`。
 
 5. **测试 API**：
    使用 Postman 或 curl 测试：
@@ -649,7 +660,11 @@ API 支持返回 Bilibili 标准 XML 格式的弹幕数据，通过查询参数 
 │   ├── esm-shim.cjs            # Node.js低版本兼容层
 │   ├── server.js               # 本地node启动脚本
 │   ├── worker.js               # 主 API 服务器代码
-│   ├── worker.test.js          # 测试文件（包含本地弹幕接口、源和 UI 测试）
+│   ├── tests/                  # 测试用例，目录结构与源码一一对应（npm test 入口）
+│   │   ├── helpers/            # 共享夹具（请求/响应 mock、全局状态重置、DOM 沙箱）
+│   │   ├── apis/ configs/ models/ sources/ utils/ ui/  # 按模块镜像的 *.test.js
+│   │   ├── worker-api.test.js  # 请求级端点测试
+│   │   └── manual/             # 依赖真实数据源的手工巡检用例（不参与自动测试，需手动指定路径运行）
 │   ├── apis/
 │   │   ├── clients/
 │   │   │   └── fongmi-api.js   # FongMi影视兼容接口
@@ -752,7 +767,7 @@ API 支持返回 Bilibili 标准 XML 格式的弹幕数据，通过查询参数 
 ├── forward/
 │   ├── custom-polyfill.js      # 自定义polyfill
 │   ├── forward-widget.js       # forward弹幕插件
-│   └── forward-widget.test.js  # forward弹幕插件测试文件
+│   └── forward-widget.spec.js  # forward弹幕插件测试脚本（真实联网，手动执行）
 ├── netlify/
 │   └── functions/
 │       └── api.js              # netlify 中间处理逻辑
